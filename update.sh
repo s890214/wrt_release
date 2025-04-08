@@ -547,6 +547,11 @@ function add_backup_info_to_sysupgrade() {
 /etc/AdGuardHome.yaml
 /etc/easytier
 /etc/lucky/
+/etc/usage.6.db
+/etc/usage.46.db
+/etc/usage.db
+/etc/wrtbwmon.user
+/etc/luci-wrtbwmon.conf
 EOF
     fi
 }
@@ -742,6 +747,13 @@ update_geoip() {
     fi
 }
 
+update_clash_meta() {
+    mkdir -p files/etc/openclash/core
+    CLASH_META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-arm64.tar.gz"
+    wget -qO- $CLASH_META_URL | tar xOvz > files/etc/openclash/core/clash_meta
+    chmod +x files/etc/openclash/core/clash*
+}
+
 main() {
     clone_repo
     clean_up
@@ -754,7 +766,7 @@ main() {
     update_golang
     change_dnsmasq2full
     fix_mk_def_depends
-     # add_wifi_default_set
+    add_wifi_default_set
     update_default_lan_addr
     remove_something_nss_kmod
     update_affinity_script
@@ -768,7 +780,7 @@ main() {
     update_pw
     install_opkg_distfeeds
     update_nss_pbuf_performance
-    set_build_signature
+    # set_build_signature
     fix_compile_vlmcsd
     update_nss_diag
     update_menu_location
@@ -785,7 +797,8 @@ main() {
     support_fw4_adg
     update_script_priority
     remove_easytier_web
-    update_geoip
+    update_clash_meta
+    # update_geoip
     # update_proxy_app_menu_location
     # update_dns_app_menu_location
 }

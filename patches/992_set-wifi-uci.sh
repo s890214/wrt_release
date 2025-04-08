@@ -22,7 +22,7 @@ set wireless.radio${radio}.txpower="${txpower}"
 set wireless.radio${radio}.cell_density='0'
 set wireless.radio${radio}.disabled='0'
 set wireless.default_radio${radio}.ssid="${ssid}"
-set wireless.default_radio${radio}.encryption='psk2+ccmp'
+set wireless.default_radio${radio}.encryption='sae-mixed'
 set wireless.default_radio${radio}.key="${key}"
 set wireless.default_radio${radio}.ieee80211k='1'
 set wireless.default_radio${radio}.time_advertisement='2'
@@ -39,9 +39,9 @@ jdc_ax1800_pro_wifi_cfg() {
 }
 
 jdc_ax6600_wifi_cfg() {
-    configure_wifi 0 149 HE80 22 'Jdc_AX6600_5G1' '12345678'
-    configure_wifi 1 1 HE20 22 'Jdc_AX6600' '12345678'
-    configure_wifi 2 44 HE160 23 'Jdc_AX6600_5G2' '12345678'
+    configure_wifi 0 auto HE80 24 'XIAOMI-SONG' 'ss838218'
+    configure_wifi 1 auto HE40 24 'XIAOMI-SONG' 'ss838218'
+    configure_wifi 2 auto HE160 24 'XIAOMI-SONG' 'ss838218'
 }
 
 redmi_ax5_wifi_cfg() {
