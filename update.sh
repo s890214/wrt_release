@@ -759,44 +759,44 @@ main() {
     clean_up
     reset_feeds_conf
     update_feeds
-    remove_unwanted_packages
-    update_homeproxy
-    fix_default_set
-    fix_miniupnpd
-    update_golang
-    change_dnsmasq2full
-    fix_mk_def_depends
+    # remove_unwanted_packages
+    # update_homeproxy
+    # fix_default_set
+    # fix_miniupnpd
+    # update_golang
+    # change_dnsmasq2full
+    # fix_mk_def_depends
     add_wifi_default_set
     update_default_lan_addr
-    remove_something_nss_kmod
-    update_affinity_script
-    fix_build_for_openssl
-    update_ath11k_fw
+    # remove_something_nss_kmod
+    # update_affinity_script
+    # fix_build_for_openssl
+    # update_ath11k_fw
     # fix_mkpkg_format_invalid
-    chanage_cpuusage
-    update_tcping
+    # chanage_cpuusage
+    # update_tcping
     add_ax6600_led
-    set_custom_task
-    update_pw
+    # set_custom_task
+    # update_pw
     install_opkg_distfeeds
-    update_nss_pbuf_performance
+    # update_nss_pbuf_performance
     # set_build_signature
-    fix_compile_vlmcsd
-    update_nss_diag
-    update_menu_location
-    fix_compile_coremark
-    update_dnsmasq_conf
+    # fix_compile_vlmcsd
+    # update_nss_diag
+    # update_menu_location
+    # fix_compile_coremark
+    # update_dnsmasq_conf
     add_backup_info_to_sysupgrade
-    optimize_smartDNS
-    update_mosdns_deconfig
-    fix_quickstart
-    update_oaf_deconfig
-    add_timecontrol
-    add_gecoosac
+    # optimize_smartDNS
+    # update_mosdns_deconfig
+    # fix_quickstart
+    # update_oaf_deconfig
+    # add_timecontrol
+    # add_gecoosac
     install_feeds
-    support_fw4_adg
-    update_script_priority
-    remove_easytier_web
+    # support_fw4_adg
+    # update_script_priority
+    # remove_easytier_web
     update_clash_meta
     # update_geoip
     # update_proxy_app_menu_location
