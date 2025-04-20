@@ -759,7 +759,7 @@ main() {
     clean_up
     reset_feeds_conf
     update_feeds
-    #11 remove_unwanted_packages
+    remove_unwanted_packages
     update_homeproxy
     fix_default_set
     fix_miniupnpd
@@ -768,7 +768,7 @@ main() {
     fix_mk_def_depends
     add_wifi_default_set
     update_default_lan_addr
-    #11 remove_something_nss_kmod
+    remove_something_nss_kmod
     update_affinity_script
     fix_build_for_openssl
     update_ath11k_fw
