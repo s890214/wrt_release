@@ -156,7 +156,7 @@ install_small8() {
         luci-theme-argon netdata luci-app-netdata lucky luci-app-lucky luci-app-openclash luci-app-homeproxy \
         luci-app-amlogic nikki luci-app-nikki tailscale luci-app-tailscale oaf open-app-filter luci-app-oaf \
         easytier luci-app-easytier msd_lite luci-app-msd_lite luci-app-wrtbwmon luci-i18n-wrtbwmon-zh-cn \
-        luci-app-bandwidthd luci-i18n-bandwidthd-zh-cn
+        bandwidthd luci-app-bandwidthd luci-i18n-bandwidthd-zh-cn
 }
 
 install_feeds() {
