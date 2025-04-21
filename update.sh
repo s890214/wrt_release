@@ -155,8 +155,7 @@ install_small8() {
         luci-app-store quickstart luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest \
         luci-theme-argon netdata luci-app-netdata lucky luci-app-lucky luci-app-openclash luci-app-homeproxy \
         luci-app-amlogic nikki luci-app-nikki tailscale luci-app-tailscale oaf open-app-filter luci-app-oaf \
-        easytier luci-app-easytier msd_lite luci-app-msd_lite luci-app-wrtbwmon luci-i18n-wrtbwmon-zh-cn \
-        bandwidthd luci-app-bandwidthd luci-i18n-bandwidthd-zh-cn
+        easytier luci-app-easytier msd_lite luci-app-msd_lite luci-app-wrtbwmon luci-i18n-wrtbwmon-zh-cn
 }
 
 install_feeds() {
@@ -490,6 +489,20 @@ fix_compile_coremark() {
     fi
 }
 
+update_bandwidthd() {
+    local repo_url="https://github.com/AlexZhuo/luci-app-bandwidthd.git"
+    local target_dir="$BUILD_DIR/feeds/AlexZhuo/luci-app-bandwidthd"
+
+    if [ -d "$target_dir" ]; then
+        echo "Updating luci-app-bandwidthd..."
+        rm -rf "$target_dir"
+    else
+        echo "Cloning luci-app-bandwidthd for the first time..."
+    fi
+
+    git clone --depth 1 "$repo_url" "$target_dir"
+}
+
 update_homeproxy() {
     local repo_url="https://github.com/immortalwrt/homeproxy.git"
     local target_dir="$BUILD_DIR/feeds/small8/luci-app-homeproxy"
@@ -498,28 +511,6 @@ update_homeproxy() {
         rm -rf "$target_dir"
         git clone --depth 1 "$repo_url" "$target_dir"
     fi
-}
-
-update_bandwidthd() {
-    echo "[🔧] 开始引入 bandwidthd 和 luci-app-bandwidthd"
-
-    # 确保 custom_packages 存在
-    mkdir -p "$BUILD_DIR/package/custom_packages"
-
-    # Bandwidthd 稳定版本（OpenWrt 官方 21.02 branch）
-    if [ ! -d "$BUILD_DIR/package/custom_packages/bandwidthd" ]; then
-        echo "[✅] 拉取 bandwidthd 官方21.02版本 (真实有效)"
-        git clone --depth=1 --branch openwrt-21.02 https://github.com/openwrt/packages "$BUILD_DIR/__tmp_bandwidthd"
-        mv "$BUILD_DIR/__tmp_bandwidthd/net/bandwidthd" "$BUILD_DIR/package/custom_packages/"
-        rm -rf "$BUILD_DIR/__tmp_bandwidthd"
-    else
-        echo "[✔️] bandwidthd 已存在，跳过拉取"
-    fi
-#
-#    # OpenWrt 编译软链创建（确保生效）
-#    [ -d "$BUILD_DIR/package/bandwidthd" ] || ln -sfn "$BUILD_DIR/package/custom_packages/bandwidthd" "$BUILD_DIR/package/bandwidthd"
-#
-    echo "[✅] bandwidthd 已成功放置并软链好，可以直接编译"
 }
 
 update_dnsmasq_conf() {
