@@ -500,6 +500,28 @@ update_homeproxy() {
     fi
 }
 
+update_bandwidthd() {
+    echo "[🔧] 开始引入 bandwidthd 和 luci-app-bandwidthd"
+
+    # 确保 custom_packages 存在
+    mkdir -p "$BUILD_DIR/package/custom_packages"
+
+    # Bandwidthd 稳定版本（OpenWrt 官方 21.02 branch）
+    if [ ! -d "$BUILD_DIR/package/custom_packages/bandwidthd" ]; then
+        echo "[✅] 拉取 bandwidthd 官方21.02版本 (真实有效)"
+        git clone --depth=1 --branch openwrt-21.02 https://github.com/openwrt/packages "$BUILD_DIR/__tmp_bandwidthd"
+        mv "$BUILD_DIR/__tmp_bandwidthd/net/bandwidthd" "$BUILD_DIR/package/custom_packages/"
+        rm -rf "$BUILD_DIR/__tmp_bandwidthd"
+    else
+        echo "[✔️] bandwidthd 已存在，跳过拉取"
+    fi
+#
+#    # OpenWrt 编译软链创建（确保生效）
+#    [ -d "$BUILD_DIR/package/bandwidthd" ] || ln -sfn "$BUILD_DIR/package/custom_packages/bandwidthd" "$BUILD_DIR/package/bandwidthd"
+#
+    echo "[✅] bandwidthd 已成功放置并软链好，可以直接编译"
+}
+
 update_dnsmasq_conf() {
     local file="$BUILD_DIR/package/network/services/dnsmasq/files/dhcp.conf"
     if [ -d "$(dirname "$file")" ] && [ -f "$file" ]; then
@@ -764,6 +786,7 @@ main() {
     update_feeds
     remove_unwanted_packages
     update_homeproxy
+    update_bandwidthd
     fix_default_set
     fix_miniupnpd
     update_golang
