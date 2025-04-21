@@ -489,20 +489,6 @@ fix_compile_coremark() {
     fi
 }
 
-update_bandwidthd() {
-    local repo_url="https://github.com/AlexZhuo/luci-app-bandwidthd.git"
-    local target_dir="$BUILD_DIR/feeds/AlexZhuo/luci-app-bandwidthd"
-
-    if [ -d "$target_dir" ]; then
-        echo "Updating luci-app-bandwidthd..."
-        rm -rf "$target_dir"
-    else
-        echo "Cloning luci-app-bandwidthd for the first time..."
-    fi
-
-    git clone --depth 1 "$repo_url" "$target_dir"
-}
-
 update_homeproxy() {
     local repo_url="https://github.com/immortalwrt/homeproxy.git"
     local target_dir="$BUILD_DIR/feeds/small8/luci-app-homeproxy"
@@ -777,7 +763,6 @@ main() {
     update_feeds
     remove_unwanted_packages
     update_homeproxy
-    update_bandwidthd
     fix_default_set
     fix_miniupnpd
     update_golang
