@@ -120,18 +120,18 @@ remove_unwanted_packages() {
         \rm -rf ./package/istore
     fi
 
-    if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
-        local nss_packages_dirs=(
-            "$BUILD_DIR/feeds/luci/protocols/luci-proto-quectel"
-            "$BUILD_DIR/feeds/packages/net/quectel-cm"
-            "$BUILD_DIR/feeds/packages/kernel/quectel-qmi-wwan"
-        )
-        for dir in "${nss_packages_dirs[@]}"; do
-            if [[ -d "$dir" ]]; then
-                \rm -rf "$dir"
-            fi
-        done
-    fi
+    # if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
+    #     local nss_packages_dirs=(
+    #         "$BUILD_DIR/feeds/luci/protocols/luci-proto-quectel"
+    #         "$BUILD_DIR/feeds/packages/net/quectel-cm"
+    #         "$BUILD_DIR/feeds/packages/kernel/quectel-qmi-wwan"
+    #     )
+    #     for dir in "${nss_packages_dirs[@]}"; do
+    #         if [[ -d "$dir" ]]; then
+    #             \rm -rf "$dir"
+    #         fi
+    #     done
+    # fi
 
     # 临时放一下，清理脚本
     if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
@@ -439,7 +439,7 @@ sed -ri \'/check_signature/s@^[^#]@#&@\' /etc/opkg.conf\n" $emortal_def_dir/file
 update_nss_pbuf_performance() {
     local pbuf_path="$BUILD_DIR/package/kernel/mac80211/files/pbuf.uci"
     if [ -d "$(dirname "$pbuf_path")" ] && [ -f $pbuf_path ]; then
-        sed -i "s/auto_scale '1'/auto_scale 'off'/g" $pbuf_path
+        # sed -i "s/auto_scale '1'/auto_scale 'off'/g" $pbuf_path
         sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" $pbuf_path
     fi
 }
@@ -770,7 +770,7 @@ main() {
     fix_mk_def_depends
     add_wifi_default_set
     update_default_lan_addr
-    remove_something_nss_kmod
+    #1 remove_something_nss_kmod
     update_affinity_script
     fix_build_for_openssl
     update_ath11k_fw
@@ -797,7 +797,7 @@ main() {
     add_gecoosac
     install_feeds
     support_fw4_adg
-    update_script_priority
+    #1 update_script_priority
     remove_easytier_web
     update_clash_meta
     # update_geoip
