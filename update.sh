@@ -120,18 +120,18 @@ remove_unwanted_packages() {
         \rm -rf ./package/istore
     fi
 
-    # if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
-    #     local nss_packages_dirs=(
-    #         "$BUILD_DIR/feeds/luci/protocols/luci-proto-quectel"
-    #         "$BUILD_DIR/feeds/packages/net/quectel-cm"
-    #         "$BUILD_DIR/feeds/packages/kernel/quectel-qmi-wwan"
-    #     )
-    #     for dir in "${nss_packages_dirs[@]}"; do
-    #         if [[ -d "$dir" ]]; then
-    #             \rm -rf "$dir"
-    #         fi
-    #     done
-    # fi
+    if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
+        local nss_packages_dirs=(
+            "$BUILD_DIR/feeds/luci/protocols/luci-proto-quectel"
+            "$BUILD_DIR/feeds/packages/net/quectel-cm"
+            "$BUILD_DIR/feeds/packages/kernel/quectel-qmi-wwan"
+        )
+        for dir in "${nss_packages_dirs[@]}"; do
+            if [[ -d "$dir" ]]; then
+                \rm -rf "$dir"
+            fi
+        done
+    fi
 
     # 临时放一下，清理脚本
     if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
@@ -770,7 +770,7 @@ main() {
     fix_mk_def_depends
     add_wifi_default_set
     update_default_lan_addr
-    #1 remove_something_nss_kmod
+    # remove_something_nss_kmod
     update_affinity_script
     fix_build_for_openssl
     update_ath11k_fw
@@ -779,7 +779,7 @@ main() {
     update_tcping
     add_ax6600_led
     set_custom_task
-    update_pw
+    # update_pw
     install_opkg_distfeeds
     update_nss_pbuf_performance
     # set_build_signature
@@ -791,14 +791,14 @@ main() {
     add_backup_info_to_sysupgrade
     optimize_smartDNS
     update_mosdns_deconfig
-    fix_quickstart
-    update_oaf_deconfig
+    # fix_quickstart
+    # update_oaf_deconfig
     add_timecontrol
     add_gecoosac
     install_feeds
-    support_fw4_adg
-    #1 update_script_priority
-    remove_easytier_web
+    # support_fw4_adg
+    update_script_priority
+    # remove_easytier_web
     update_clash_meta
     # update_geoip
     # update_proxy_app_menu_location
