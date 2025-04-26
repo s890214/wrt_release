@@ -439,7 +439,7 @@ sed -ri \'/check_signature/s@^[^#]@#&@\' /etc/opkg.conf\n" $emortal_def_dir/file
 update_nss_pbuf_performance() {
     local pbuf_path="$BUILD_DIR/package/kernel/mac80211/files/pbuf.uci"
     if [ -d "$(dirname "$pbuf_path")" ] && [ -f $pbuf_path ]; then
-        # sed -i "s/auto_scale '1'/auto_scale 'off'/g" $pbuf_path
+        sed -i "s/auto_scale '1'/auto_scale 'off'/g" $pbuf_path
         sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" $pbuf_path
     fi
 }
