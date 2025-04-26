@@ -447,7 +447,7 @@ update_nss_pbuf_performance() {
 set_build_signature() {
     local file="$BUILD_DIR/feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
     if [ -d "$(dirname "$file")" ] && [ -f $file ]; then
-        sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ build by ZqinKing')/g" "$file"
+        sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ by SONG88')/g" "$file"
     fi
 }
 
@@ -770,11 +770,11 @@ main() {
     fix_mk_def_depends
     add_wifi_default_set
     update_default_lan_addr
-    # remove_something_nss_kmod
+    remove_something_nss_kmod
     update_affinity_script
     fix_build_for_openssl
     update_ath11k_fw
-    # fix_mkpkg_format_invalid
+    fix_mkpkg_format_invalid
     chanage_cpuusage
     update_tcping
     add_ax6600_led
@@ -782,7 +782,7 @@ main() {
     # update_pw
     install_opkg_distfeeds
     update_nss_pbuf_performance
-    # set_build_signature
+    set_build_signature
     fix_compile_vlmcsd
     update_nss_diag
     update_menu_location
