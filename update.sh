@@ -287,14 +287,51 @@ update_affinity_script() {
 fix_build_for_openssl() {
     local openssl_dir="$BUILD_DIR/package/libs/openssl"
     local makefile="$openssl_dir/Makefile"
+    
+    # 检查构建目录中的OpenSSL Makefile是否存在
     if [ -d "$(dirname "$makefile")" ] && [ -f "$makefile" ]; then
-        if grep -q "3.0.16" "$makefile"; then
-            # 替换本地openssl版本
-            rm -rf "$openssl_dir"
-            cp -rf "$BASE_PATH/patches/openssl" "$openssl_dir"
+        # 从Makefile提取当前版本号
+        local current_version=$(grep -oP 'PKG_VERSION:=\K[0-9]+\.[0-9]+\.[0-9]+' "$makefile" 2>/dev/null)
+        if [ -z "$current_version" ]; then
+            echo "Could not extract current OpenSSL version, skipping"
+            return
         fi
+        
+        # 检查补丁目录的Makefile是否存在
+        local patch_openssl="$BASE_PATH/patches/openssl"
+        local patch_makefile="$patch_openssl/Makefile"
+        
+        if [ ! -d "$patch_openssl" ] || [ ! -f "$patch_makefile" ]; then
+            echo "Patch OpenSSL not found, skipping"
+            return
+        fi
+        
+        # 从补丁目录的Makefile提取目标版本号
+        local patch_version=$(grep -oP 'PKG_VERSION:=\K[0-9]+\.[0-9]+\.[0-9]+' "$patch_makefile" 2>/dev/null)
+        if [ -z "$patch_version" ]; then
+            echo "Could not extract patch OpenSSL version, skipping"
+            return
+        fi
+        
+        echo "Current OpenSSL version: $current_version"
+        echo "Patch OpenSSL version: $patch_version"
+        
+        # 使用sort命令比较版本号
+        local newer_version=$(echo -e "$current_version\n$patch_version" | sort -V | tail -n1)
+        
+        # 如果补丁版本更新，则替换
+        if [ "$newer_version" = "$patch_version" ] && [ "$current_version" != "$patch_version" ]; then
+            echo "Replacing OpenSSL with newer version $patch_version"
+            rm -rf "$openssl_dir"
+            cp -rf "$patch_openssl" "$openssl_dir"
+        else
+            echo "Keeping current OpenSSL version $current_version"
+        fi
+    else
+        echo "OpenSSL Makefile not found in build directory, skipping"
     fi
 }
+
 
 update_ath11k_fw() {
     local makefile="$BUILD_DIR/package/firmware/ath11k-firmware/Makefile"
