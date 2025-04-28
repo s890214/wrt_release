@@ -287,7 +287,7 @@ update_affinity_script() {
 fix_build_for_openssl() {
     local openssl_dir="$BUILD_DIR/package/libs/openssl"
     local makefile="$openssl_dir/Makefile"
-    
+
     # 检查构建目录中的OpenSSL Makefile是否存在
     if [ -d "$(dirname "$makefile")" ] && [ -f "$makefile" ]; then
         # 从Makefile提取当前版本号
@@ -296,29 +296,29 @@ fix_build_for_openssl() {
             echo "Could not extract current OpenSSL version, skipping"
             return
         fi
-        
+
         # 检查补丁目录的Makefile是否存在
         local patch_openssl="$BASE_PATH/patches/openssl"
         local patch_makefile="$patch_openssl/Makefile"
-        
+
         if [ ! -d "$patch_openssl" ] || [ ! -f "$patch_makefile" ]; then
             echo "Patch OpenSSL not found, skipping"
             return
         fi
-        
+
         # 从补丁目录的Makefile提取目标版本号
         local patch_version=$(grep -oP 'PKG_VERSION:=\K[0-9]+\.[0-9]+\.[0-9]+' "$patch_makefile" 2>/dev/null)
         if [ -z "$patch_version" ]; then
             echo "Could not extract patch OpenSSL version, skipping"
             return
         fi
-        
+
         echo "Current OpenSSL version: $current_version"
         echo "Patch OpenSSL version: $patch_version"
-        
+
         # 使用sort命令比较版本号
         local newer_version=$(echo -e "$current_version\n$patch_version" | sort -V | tail -n1)
-        
+
         # 如果补丁版本更新，则替换
         if [ "$newer_version" = "$patch_version" ] && [ "$current_version" != "$patch_version" ]; then
             echo "Replacing OpenSSL with newer version $patch_version"
@@ -759,10 +759,10 @@ update_dns_app_menu_location() {
     fi
 }
 
-remove_easytier_web() {
-    local easytier_path="$BUILD_DIR/package/feeds/small8/easytier/Makefile"
+fix_easytier() {
+    local easytier_path="$BUILD_DIR/package/feeds/small8/luci-app-easytier/luasrc/model/cbi/easytier.lua"
     if [ -d "${easytier_path%/*}" ] && [ -f "$easytier_path" ]; then
-        sed -i '/easytier-web/d' "$easytier_path"
+        sed -i 's/util/xml/g' "$easytier_path"
     fi
 }
 
@@ -811,7 +811,7 @@ main() {
     update_affinity_script
     fix_build_for_openssl
     update_ath11k_fw
-    fix_mkpkg_format_invalid
+    # fix_mkpkg_format_invalid
     chanage_cpuusage
     update_tcping
     add_ax6600_led
@@ -835,7 +835,7 @@ main() {
     install_feeds
     # support_fw4_adg
     update_script_priority
-    # remove_easytier_web
+    fix_easytier
     update_clash_meta
     # update_geoip
     # update_proxy_app_menu_location
