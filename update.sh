@@ -147,7 +147,7 @@ install_small8() {
         luci-app-passwall alist luci-app-alist smartdns luci-app-smartdns v2dat mosdns luci-app-mosdns \
         adguardhome luci-app-adguardhome ddns-go luci-app-ddns-go taskd luci-lib-xterm luci-lib-taskd \
         luci-app-store quickstart luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest \
-        luci-theme-argon netdata luci-app-netdata lucky luci-app-lucky luci-app-openclash luci-app-homeproxy \
+        luci-theme-argon netdata luci-app-netdata luci-app-openclash luci-app-homeproxy \
         luci-app-amlogic nikki luci-app-nikki tailscale luci-app-tailscale oaf open-app-filter luci-app-oaf \
         easytier luci-app-easytier msd_lite luci-app-msd_lite luci-app-wrtbwmon luci-i18n-wrtbwmon-zh-cn
 }
@@ -787,6 +787,16 @@ update_clash_meta() {
     chmod +x files/etc/openclash/core/clash*
 }
 
+add_lucky() {
+    local lucky_dir="$BUILD_DIR/package/feeds/gdy666/luci-app-lucky"
+
+    # 删除旧的目录（如果存在）
+    rm -rf "$lucky_dir" 2>/dev/null
+
+    # 克隆最新的仓库
+    git clone --depth=1 https://github.com/gdy666/luci-app-lucky.git "$lucky_dir"
+}
+
 main() {
     clone_repo
     clean_up
@@ -809,6 +819,7 @@ main() {
     chanage_cpuusage
     update_tcping
     add_ax6600_led
+    add_lucky
     set_custom_task
     # update_pw
     install_opkg_distfeeds
