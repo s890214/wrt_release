@@ -841,7 +841,7 @@ main() {
     fix_easytier
     update_clash_meta
     # update_geoip
-    update_package "xray-core"
+    # update_package "xray-core"
     # update_proxy_app_menu_location
     # update_dns_app_menu_location
 }
