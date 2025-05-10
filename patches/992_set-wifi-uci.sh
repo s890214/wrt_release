@@ -40,7 +40,7 @@ jdc_ax1800_pro_wifi_cfg() {
 
 jdc_ax6600_wifi_cfg() {
     configure_wifi 0 149 HE80 24 'XIAOMI-SONG' 'ss838218'
-    configure_wifi 1 1 HE20 24 'XIAOMI-SONG' 'ss838218'
+    configure_wifi 1 6 HE20 24 'XIAOMI-SONG' 'ss838218'
     configure_wifi 2 44 HE160 24 'XIAOMI-SONG' 'ss838218'
 }
 
