@@ -581,6 +581,7 @@ function add_backup_info_to_sysupgrade() {
 /etc/usage.db
 /etc/wrtbwmon.user
 /etc/luci-wrtbwmon.conf
+/usr/bin/lucky
 EOF
     fi
 }
@@ -783,7 +784,7 @@ update_clash_meta() {
     chmod +x files/etc/openclash/core/clash*
 }
 
-add_lucky() {
+update_lucky_app() {
     local lucky_dir="$BUILD_DIR/package/feeds/gdy666/luci-app-lucky"
 
     # 删除旧的目录（如果存在）
@@ -791,6 +792,15 @@ add_lucky() {
 
     # 克隆最新的仓库
     git clone --depth=1 https://github.com/gdy666/luci-app-lucky.git "$lucky_dir"
+}
+
+update_lucky() {
+    local version=$(find "$BASE_PATH/patches" -name "lucky*" -printf "%f\n" | head -n 1 | awk -F'_' '{print $2}')
+    local mk_dir="$BUILD_DIR/feeds/small8/lucky/Makefile"
+    if [ -d "${mk_dir%/*}" ] && [ -f "$mk_dir" ]; then
+        sed -i '/Build\/Prepare/ a\	[ -f $(TOPDIR)/../patches/lucky_'${version}'_Linux_$(LUCKY_ARCH)_wanji.tar.gz ] && install -Dm644 $(TOPDIR)/../patches/lucky_'${version}'_Linux_$(LUCKY_ARCH)_wanji.tar.gz $(PKG_BUILD_DIR)/$(PKG_NAME)_$(PKG_VERSION)_Linux_$(LUCKY_ARCH).tar.gz' "$mk_dir"
+        sed -i '/wget/d' "$mk_dir"
+    fi
 }
 
 main() {
@@ -815,7 +825,7 @@ main() {
     chanage_cpuusage
     update_tcping
     add_ax6600_led
-    add_lucky
+    update_lucky_app
     set_custom_task
     # update_pw
     install_opkg_distfeeds
@@ -824,17 +834,18 @@ main() {
     fix_compile_vlmcsd
     update_nss_diag
     update_menu_location
-    # fix_compile_coremark
+    fix_compile_coremark
     update_dnsmasq_conf
     add_backup_info_to_sysupgrade
     optimize_smartDNS
     update_mosdns_deconfig
-    # fix_quickstart
-    # update_oaf_deconfig
+    fix_quickstart
+    update_oaf_deconfig
     add_timecontrol
     add_gecoosac
+    # update_lucky
     install_feeds
-    # support_fw4_adg
+    support_fw4_adg
     update_script_priority
     fix_easytier
     update_clash_meta
