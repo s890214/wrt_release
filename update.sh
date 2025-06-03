@@ -516,6 +516,15 @@ fix_compile_coremark() {
     fi
 }
 
+fix_compile_rust() {
+    local file=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/rust/Makefile")
+    local file=$(find "$BUILD_DIR/feeds/packages/" -maxdepth 3 -type f -wholename "*/rust/Makefile")
+    if [ -f "$file" ]; then
+    	echo " "
+    	sed -i 's/ci-llvm=true/ci-llvm=false/g' $file
+    fi
+}
+
 update_homeproxy() {
     local repo_url="https://github.com/immortalwrt/homeproxy.git"
     local target_dir="$BUILD_DIR/feeds/small8/luci-app-homeproxy"
@@ -835,6 +844,7 @@ main() {
     update_nss_diag
     update_menu_location
     fix_compile_coremark
+    fix_compile_rust
     update_dnsmasq_conf
     add_backup_info_to_sysupgrade
     optimize_smartDNS
