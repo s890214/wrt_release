@@ -122,9 +122,9 @@ remove_unwanted_packages() {
     fi
 
     # ipq60xx不支持NSS offload mnet_rx
-    if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
-        rm -rf "$BUILD_DIR/feeds/nss_packages/wwan"
-    fi
+    # if grep -q "nss_packages" "$BUILD_DIR/$FEEDS_CONF"; then
+    #     rm -rf "$BUILD_DIR/feeds/nss_packages/wwan"
+    # fi
 
     # 临时放一下，清理脚本
     if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
@@ -516,15 +516,6 @@ fix_compile_coremark() {
     fi
 }
 
-fix_compile_rust() {
-    local file=$(find ../feeds/packages/ -maxdepth 3 -type f -wholename "*/rust/Makefile")
-    local file=$(find "$BUILD_DIR/feeds/packages/" -maxdepth 3 -type f -wholename "*/rust/Makefile")
-    if [ -f "$file" ]; then
-    	echo " "
-    	sed -i 's/ci-llvm=true/ci-llvm=false/g' $file
-    fi
-}
-
 update_homeproxy() {
     local repo_url="https://github.com/immortalwrt/homeproxy.git"
     local target_dir="$BUILD_DIR/feeds/small8/luci-app-homeproxy"
@@ -812,6 +803,12 @@ update_lucky() {
     fi
 }
 
+fix_rust_compile_error() {
+    if [ -f "$BUILD_DIR/feeds/packages/lang/rust/Makefile" ]; then
+        sed -i 's/download-ci-llvm=true/download-ci-llvm=false/g' "$BUILD_DIR/feeds/packages/lang/rust/Makefile"
+    fi
+}
+
 main() {
     clone_repo
     clean_up
@@ -828,7 +825,7 @@ main() {
     update_default_lan_addr
     remove_something_nss_kmod
     update_affinity_script
-    fix_build_for_openssl
+    # fix_build_for_openssl
     update_ath11k_fw
     # fix_mkpkg_format_invalid
     chanage_cpuusage
@@ -844,7 +841,6 @@ main() {
     update_nss_diag
     update_menu_location
     fix_compile_coremark
-    fix_compile_rust
     update_dnsmasq_conf
     add_backup_info_to_sysupgrade
     optimize_smartDNS
@@ -854,6 +850,7 @@ main() {
     add_timecontrol
     add_gecoosac
     # update_lucky
+    fix_rust_compile_error
     install_feeds
     support_fw4_adg
     update_script_priority
