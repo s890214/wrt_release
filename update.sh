@@ -423,9 +423,9 @@ set_custom_task() {
 START=99
 
 boot() {
-    # 重新添加缓存请求定时任务
-    # sed -i '/drop_caches/d' /etc/crontabs/root
-    # echo "15 3 * * * sync && echo 3 > /proc/sys/vm/drop_caches" >>/etc/crontabs/root
+    # 重新添加 @reboot 缓存清理任务
+    sed -i '/drop_caches/d' /etc/crontabs/root
+    echo "@reboot sleep 600 && sync && echo 3 > /proc/sys/vm/drop_caches" >> /etc/crontabs/root
 
     # 删除现有的 wireguard_watchdog 任务
     sed -i '/wireguard_watchdog/d' /etc/crontabs/root
