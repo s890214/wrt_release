@@ -38,7 +38,7 @@ jobs:
           remove-codeql: "true"
           remove-docker-images: "true"
           remove-large-packages: "false"
-          remove-cached-tools: "true"
+          remove-cached-tools: "false"
           remove-swapfile: "true"
 
       - name: Checkout
