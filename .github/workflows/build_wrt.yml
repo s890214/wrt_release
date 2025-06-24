@@ -67,6 +67,7 @@ jobs:
             sudo ln -s "$DST" "$SRC"
             sudo chown -R $USER:$USER "$DST"
             echo "Moved and symlinked."
+            sudo df -h
           else
             echo "Workspace already moved or does not exist."
           fi
@@ -98,7 +99,10 @@ jobs:
           fi
 
       - name: Build Firmware
-        run: ./build.sh ${{ inputs.model }}
+        run: |
+          sudo df -h
+          ./build.sh ${{ inputs.model }}
+          sudo df -h
 
       - name: Delete Old Cache
         run: |
