@@ -856,9 +856,6 @@ update_smartdns_luci() {
 }
 
 update_diskman() {
-    # 保存原始目录
-    local original_dir=$(pwd)
-
     local path="$BUILD_DIR/feeds/luci/applications/luci-app-diskman"
     if [ -d "$path" ]; then
         cd "$BUILD_DIR/feeds/luci/applications" || return # 显式路径避免歧义
@@ -875,9 +872,7 @@ update_diskman() {
         mv applications/luci-app-diskman ../luci-app-diskman || return # 添加错误检查
         cd .. || return
         \rm -rf diskman
-
-        # 函数结束前返回原始目录
-        cd "$original_dir" || return
+        cd "$BUILD_DIR"
     fi
 }
 
