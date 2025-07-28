@@ -1049,8 +1049,8 @@ main() {
     update_oaf_deconfig
     add_timecontrol
     add_gecoosac
-      # add_quickfile
-      # update_lucky
+    add_quickfile
+    # update_lucky
     fix_rust_compile_error
     # update_smartdns 暂不更新，openwrt-smartdns不适配
     update_diskman
