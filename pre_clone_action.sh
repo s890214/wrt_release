@@ -27,7 +27,7 @@ read_ini_by_key() {
 REPO_URL=$(read_ini_by_key "REPO_URL")
 REPO_BRANCH=$(read_ini_by_key "REPO_BRANCH")
 REPO_BRANCH=${REPO_BRANCH:-main}
-BUILD_DIR="$BASE_PATH/action_build"
+BUILD_DIR="$BASE_PATH/$(read_ini_by_key "BUILD_DIR")"
 
 echo $REPO_URL $REPO_BRANCH
 echo "$REPO_URL/$REPO_BRANCH" >"$BASE_PATH/repo_flag"
