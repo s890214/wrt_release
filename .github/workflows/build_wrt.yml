@@ -54,7 +54,7 @@ jobs:
           COMMIT=$(git -C "$BUILD_DIR" rev-parse HEAD)
           echo "OPENWRT_PATH=$PWD/$BUILD_DIR" >> $GITHUB_ENV
           echo "CACHE_TOOLCHAIN=true" >> $GITHUB_ENV
-          echo "MIXKEY=${{ inputs.model }}-$COMMIT" >> $GITHUB_ENV
+          echo "MIXKEY=${{ matrix.os }}-${{ inputs.model }}-${COMMIT}" >> $GITHUB_ENV
 
       - name: Cache Toolchain
         if: env.CACHE_TOOLCHAIN == 'true'
