@@ -87,6 +87,13 @@ jobs:
             echo "没有找到 restore-keys 匹配的缓存。"
           fi
 
+      - name: 检查缓存目录大小1
+        run: |
+          echo ".ccache 目录大小："
+          du -sh ./action_build/.ccache || echo "未找到 .ccache"
+          echo "staging_dir 目录大小："
+          du -sh ./action_build/staging_dir || echo "未找到 staging_dir"
+
       - name: Refresh the cache
         run: |
           if [ -d "./action_build/staging_dir" ]; then
@@ -94,6 +101,14 @@ jobs:
                 find "$dir" -type f -exec touch {} +
             done
           fi
+
+      - name: 检查缓存目录大小2
+        run: |
+          echo ".ccache 目录大小："
+          du -sh ./action_build/.ccache || echo "未找到 .ccache"
+          echo "staging_dir 目录大小："
+          du -sh ./action_build/staging_dir || echo "未找到 staging_dir"
+
 
       - name: Build Firmware
         run: ./build.sh ${{ inputs.model }}
