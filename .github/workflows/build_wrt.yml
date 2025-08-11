@@ -30,8 +30,7 @@ jobs:
       - name: Build System Setup
         run: |
           sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_environment.sh)'
-          sudo -E apt -yqq install dos2unix
-          sudo -E apt -yqq install libfuse-dev
+          sudo -E apt -yqq install dos2unix libfuse-dev ccache
           sudo -E apt -yqq autoremove --purge
           sudo -E apt -yqq autoclean
           sudo -E apt -yqq clean
@@ -49,15 +48,38 @@ jobs:
       - name: Pre Clone
         run: ./pre_clone_action.sh ${{ inputs.model }}
 
-      - name: Cache Dependencies
+      # Cache: dl (downloads) - 高命中率，强烈建议缓存
+      - name: Cache dl
         uses: actions/cache@v4
+        id: cache-dl
         with:
-          path: |
-            ./action_build/.ccache
-            ./action_build/staging_dir
-          key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}
+          path: ./action_build/dl
+          key: ${{ runner.os }}-openwrt-dl-${{ inputs.model }}-${{ hashFiles('feeds.conf.default') }}
           restore-keys: |
-            ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
+            ${{ runner.os }}-openwrt-dl-${{ inputs.model }}-
+            ${{ runner.os }}-openwrt-dl-
+
+      # Cache: ccache - 需要宿主机安装 ccache（已在 Build System Setup 安装）
+      - name: Cache ccache
+        uses: actions/cache@v4
+        id: cache-ccache
+        with:
+          path: ./action_build/.ccache
+          key: ${{ runner.os }}-ccache-${{ inputs.model }}-${{ hashFiles('deconfig/**','compilecfg/**') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-${{ inputs.model }}-
+            ${{ runner.os }}-ccache-
+
+      # 可选：Cache staging_dir（体积可能很大，可能导致保存失败或被回收）
+      - name: Cache staging_dir (optional, may be large)
+        uses: actions/cache@v4
+        id: cache-staging
+        with:
+          path: ./action_build/staging_dir
+          key: ${{ runner.os }}-staging-${{ inputs.model }}-${{ hashFiles('repo_flag') }}
+          restore-keys: |
+            ${{ runner.os }}-staging-${{ inputs.model }}-
+            ${{ runner.os }}-staging-
 
       - name: Refresh the cache
         run: |
@@ -67,29 +89,39 @@ jobs:
             done
           fi
 
-      - name: 查看 ccache 统计
-        run: ccache -s || echo "ccache 未安装或无统计"
+      - name: Setup CCACHE env
+        run: |
+          mkdir -p ./action_build/.ccache
+          echo "CCACHE_DIR=$GITHUB_WORKSPACE/action_build/.ccache" >> $GITHUB_ENV
+          echo "CCACHE_MAXSIZE=5G" >> $GITHUB_ENV
+          # 显示 ccache 版本和统计，便于调试
+          ccache --version || true
+          ccache -s || true
+
+      - name: Debug cache status
+        run: |
+          echo "dl cache hit: ${{ steps.cache-dl.outputs.cache-hit }}"
+          echo "ccache hit: ${{ steps.cache-ccache.outputs.cache-hit }}"
+          echo "staging cache hit: ${{ steps.cache-staging.outputs.cache-hit }}"
+          echo "dl size:"
+          du -sh ./action_build/dl || true
+          echo ".ccache size:"
+          du -sh ./action_build/.ccache || true
+          echo "staging_dir size (top-level):"
+          du -sh ./action_build/staging_dir || true
 
       - name: Build Firmware
         run: ./build.sh ${{ inputs.model }}
 
-      - name: Delete Old Cache
-        run: |
-          # 获取缓存列表并删除
-          gh cache list --key ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}- --json key --jq '.[] | .key' | while read -r key; do
-            gh cache delete "$key"
-          done
-          # 输出缓存状态
-          echo "========cache status========"
-          echo "ccache: $(du -sh ./action_build/.ccache | cut -f 1)"
-          echo "staging: $(du -sh ./action_build/staging_dir | cut -f 1)"
+      # 删除“Delete Old Cache”步骤（不要在同一 Job 中清理刚使用的缓存）
+      # 若确实需要定期清理缓存，请另建独立 workflow 或手动操作
 
       - name: Machine Information
         run: |
           echo "=============================================="
-          lscpu | grep -E "name|Core|Thread"
+          lscpu | grep -E "name|Core|Thread" || true
           echo "=============================================="
-          df -h
+          df -h || true
           echo "=============================================="
 
       - name: Upload Firmware
