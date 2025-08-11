@@ -51,7 +51,7 @@ jobs:
       - name: Set Cache Env
         run: |
           BUILD_DIR=$(awk -F= '/^BUILD_DIR[[:space:]]*=/ {print $2}' "compilecfg/${{ inputs.model }}.ini" | xargs)
-          COMMIT=$(git -C "$BUILD_DIR" rev-parse HEAD)
+          COMMIT=$(git -C "$BUILD_DIR" rev-parse --short=7 HEAD)
           echo "OPENWRT_PATH=$PWD/$BUILD_DIR" >> $GITHUB_ENV
           echo "CACHE_TOOLCHAIN=true" >> $GITHUB_ENV
           echo "MIXKEY=${{ matrix.os }}-${{ inputs.model }}-${COMMIT}" >> $GITHUB_ENV
@@ -63,14 +63,6 @@ jobs:
           ccache: false
           mixkey: ${{ env.MIXKEY }}
           prefix: ${{ env.OPENWRT_PATH }}
-
-      - name: Refresh the cache
-        run: |
-          if [ -d "./action_build/staging_dir" ]; then
-            find "./action_build/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r dir; do
-                find "$dir" -type f -exec touch {} +
-            done
-          fi
 
       - name: Build Firmware
         run: ./build.sh ${{ inputs.model }}
