@@ -59,6 +59,34 @@ jobs:
           restore-keys: |
             ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
 
+      - name: 测试缓存命中情况
+        run: |
+          full_key="${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}"
+          restore_key_prefix="${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-"
+      
+          echo "完整缓存 Key: $full_key"
+          echo "restore-keys 前缀: $restore_key_prefix"
+      
+          echo "查询完全匹配的缓存 Key："
+          gh cache list --key "$full_key" --json key --jq '.[] | .key' || echo "无完全匹配缓存"
+      
+          if gh cache list --key "$full_key" --json key --jq '.[] | .key' | grep -q .; then
+            echo "找到完全匹配的缓存。"
+          else
+            echo "没有找到完全匹配的缓存。"
+          fi
+      
+          echo "---------------------------------"
+      
+          echo "查询 restore-keys 匹配的缓存 Key 列表："
+          gh cache list --key "$restore_key_prefix" --json key --jq '.[] | .key' || echo "无 restore-keys 缓存"
+      
+          if gh cache list --key "$restore_key_prefix" --json key --jq '.[] | .key' | grep -q .; then
+            echo "找到 restore-keys 匹配的缓存。"
+          else
+            echo "没有找到 restore-keys 匹配的缓存。"
+          fi
+
       - name: Refresh the cache
         run: |
           if [ -d "./action_build/staging_dir" ]; then
