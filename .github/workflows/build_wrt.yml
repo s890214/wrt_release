@@ -48,12 +48,20 @@ jobs:
       - name: Pre Clone
         run: ./pre_clone_action.sh ${{ inputs.model }}
 
-      - name: Cache Toolchain(缓存工具链)
+      - name: Set Cache Env
+        run: |
+          BUILD_DIR=$(awk -F= '/^BUILD_DIR[[:space:]]*=/ {print $2}' "compilecfg/${{ inputs.model }}.ini" | xargs)
+          COMMIT=$(git -C "$BUILD_DIR" rev-parse HEAD)
+          echo "OPENWRT_PATH=$PWD/$BUILD_DIR" >> $GITHUB_ENV
+          echo "CACHE_TOOLCHAIN=true" >> $GITHUB_ENV
+          echo "MIXKEY=${{ inputs.model }}-$COMMIT" >> $GITHUB_ENV
+
+      - name: Cache Toolchain
         if: env.CACHE_TOOLCHAIN == 'true'
         uses: HiGarfield/cachewrtbuild@main
         with:
           ccache: false
-          mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+          mixkey: ${{ env.MIXKEY }}
           prefix: ${{ env.OPENWRT_PATH }}
 
       - name: Refresh the cache
