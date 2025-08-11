@@ -55,9 +55,6 @@ jobs:
         with:
           path: ./action_build/dl
           key: ${{ runner.os }}-openwrt-dl-${{ inputs.model }}-${{ hashFiles('feeds.conf.default') }}
-          restore-keys: |
-            ${{ runner.os }}-openwrt-dl-${{ inputs.model }}-
-            ${{ runner.os }}-openwrt-dl-
 
       # Cache: ccache - 需要宿主机安装 ccache（已在 Build System Setup 安装）
       - name: Cache ccache
@@ -66,9 +63,6 @@ jobs:
         with:
           path: ./action_build/.ccache
           key: ${{ runner.os }}-ccache-${{ inputs.model }}-${{ hashFiles('deconfig/**','compilecfg/**') }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ inputs.model }}-
-            ${{ runner.os }}-ccache-
 
       # 可选：Cache staging_dir（体积可能很大，可能导致保存失败或被回收）
       - name: Cache staging_dir (optional, may be large)
@@ -77,9 +71,6 @@ jobs:
         with:
           path: ./action_build/staging_dir
           key: ${{ runner.os }}-staging-${{ inputs.model }}-${{ hashFiles('repo_flag') }}
-          restore-keys: |
-            ${{ runner.os }}-staging-${{ inputs.model }}-
-            ${{ runner.os }}-staging-
 
       - name: Refresh the cache
         run: |
