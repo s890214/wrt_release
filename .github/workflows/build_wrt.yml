@@ -48,29 +48,13 @@ jobs:
       - name: Pre Clone
         run: ./pre_clone_action.sh ${{ inputs.model }}
 
-      # Cache: dl (downloads) - 高命中率，强烈建议缓存
-      - name: Cache dl
-        uses: actions/cache@v4
-        id: cache-dl
+      - name: Cache Toolchain(缓存工具链)
+        if: env.CACHE_TOOLCHAIN == 'true'
+        uses: HiGarfield/cachewrtbuild@main
         with:
-          path: ./action_build/dl
-          key: ${{ runner.os }}-openwrt-dl-${{ inputs.model }}-${{ hashFiles('feeds.conf.default') }}
-
-      # Cache: ccache - 需要宿主机安装 ccache（已在 Build System Setup 安装）
-      - name: Cache ccache
-        uses: actions/cache@v4
-        id: cache-ccache
-        with:
-          path: ./action_build/.ccache
-          key: ${{ runner.os }}-ccache-${{ inputs.model }}-${{ hashFiles('deconfig/**','compilecfg/**') }}
-
-      # 可选：Cache staging_dir（体积可能很大，可能导致保存失败或被回收）
-      - name: Cache staging_dir (optional, may be large)
-        uses: actions/cache@v4
-        id: cache-staging
-        with:
-          path: ./action_build/staging_dir
-          key: ${{ runner.os }}-staging-${{ inputs.model }}-${{ hashFiles('repo_flag') }}
+          ccache: false
+          mixkey: ${{ env.SOURCE_REPO }}-${{ env.REPO_BRANCH }}-${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+          prefix: ${{ env.OPENWRT_PATH }}
 
       - name: Refresh the cache
         run: |
@@ -80,32 +64,8 @@ jobs:
             done
           fi
 
-      - name: Setup CCACHE env
-        run: |
-          mkdir -p ./action_build/.ccache
-          echo "CCACHE_DIR=$GITHUB_WORKSPACE/action_build/.ccache" >> $GITHUB_ENV
-          echo "CCACHE_MAXSIZE=5G" >> $GITHUB_ENV
-          # 显示 ccache 版本和统计，便于调试
-          ccache --version || true
-          ccache -s || true
-
-      - name: Debug cache status
-        run: |
-          echo "dl cache hit: ${{ steps.cache-dl.outputs.cache-hit }}"
-          echo "ccache hit: ${{ steps.cache-ccache.outputs.cache-hit }}"
-          echo "staging cache hit: ${{ steps.cache-staging.outputs.cache-hit }}"
-          echo "dl size:"
-          du -sh ./action_build/dl || true
-          echo ".ccache size:"
-          du -sh ./action_build/.ccache || true
-          echo "staging_dir size (top-level):"
-          du -sh ./action_build/staging_dir || true
-
       - name: Build Firmware
         run: ./build.sh ${{ inputs.model }}
-
-      # 删除“Delete Old Cache”步骤（不要在同一 Job 中清理刚使用的缓存）
-      # 若确实需要定期清理缓存，请另建独立 workflow 或手动操作
 
       - name: Machine Information
         run: |
