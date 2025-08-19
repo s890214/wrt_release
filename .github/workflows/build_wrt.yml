@@ -55,27 +55,11 @@ jobs:
           path: |
             ./action_build/.ccache
             ./action_build/staging_dir
+            ./action_build/dl
+            ./action_build/build_dir/host
           key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}
           restore-keys: |
             ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
-
-      - name: Cache Ruby build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./action_build/build_dir/target-*/ruby-*
-            ./action_build/bin/packages/*/*/ruby_*.ipk
-            ./action_build/staging_dir/target-*/ruby-*
-          key: ruby-${{ hashFiles('action_build/feeds/packages/lang/ruby/Makefile') }}
-
-      - name: Cache GnuTLS build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./action_build/build_dir/target-*/gnutls-*
-            ./action_build/bin/packages/*/*/gnutls_*.ipk
-            ./action_build/staging_dir/target-*/gnutls-*
-          key: gnutls-${{ hashFiles('action_build/feeds/packages/libs/gnutls/Makefile') }}
 
       - name: Refresh the cache
         run: |
