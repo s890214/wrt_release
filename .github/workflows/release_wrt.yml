@@ -57,6 +57,8 @@ jobs:
           path: |
             ./action_build/.ccache
             ./action_build/staging_dir
+            ./action_build/dl
+            ./action_build/build_dir/host
           key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}
           restore-keys: |
             ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
