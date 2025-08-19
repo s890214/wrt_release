@@ -57,9 +57,9 @@ jobs:
             ./action_build/staging_dir
             ./action_build/dl
             ./action_build/build_dir/host
-          key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}
+          key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}
           restore-keys: |
-            ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
+            ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}
 
       - name: Refresh the cache
         run: |
@@ -75,13 +75,15 @@ jobs:
       - name: Delete Old Cache
         run: |
           # 获取缓存列表并删除
-          gh cache list --key ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}- --json key --jq '.[] | .key' | while read -r key; do
-            gh cache delete "$key"
-          done
+          # gh cache list --key ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}- --json key --jq '.[] | .key' | while read -r key; do
+          #   gh cache delete "$key"
+          # done
           # 输出缓存状态
           echo "========cache status========"
           echo "ccache: $(du -sh ./action_build/.ccache | cut -f 1)"
           echo "staging: $(du -sh ./action_build/staging_dir | cut -f 1)"
+          echo "dl: $(du -sh ./action_build/dl | cut -f 1)"
+          echo "host: $(du -sh ./action_build/build_dir/host | cut -f 1)"
 
       - name: Machine Information
         run: |
