@@ -55,8 +55,8 @@ jobs:
           path: |
             ./action_build/.ccache
             ./action_build/staging_dir
-            # ./action_build/dl
-            # ./action_build/build_dir/host
+            ./action_build/dl
+            ./action_build/build_dir/host
           key: ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-${{ env.BUILD_DATE }}
           restore-keys: |
             ${{ matrix.os }}-${{ hashFiles('**/repo_flag') }}-
@@ -67,6 +67,15 @@ jobs:
             find "./action_build/staging_dir" -type d -name "stamp" -not -path "*target*" | while read -r dir; do
                 find "$dir" -type f -exec touch {} +
             done
+          fi
+          if [ -d "./action_build/.ccache" ]; then
+            find "./action_build/.ccache" -type f -exec touch {} +
+          fi
+          if [ -d "./action_build/dl" ]; then
+            find "./action_build/dl" -type f -exec touch {} +
+          fi
+          if [ -d "./action_build/build_dir/host" ]; then
+            find "./action_build/build_dir/host" -type f -exec touch {} +
           fi
 
       - name: Build Firmware
@@ -82,8 +91,8 @@ jobs:
           echo "========cache status========"
           echo "ccache: $(du -sh ./action_build/.ccache | cut -f 1)"
           echo "staging: $(du -sh ./action_build/staging_dir | cut -f 1)"
-          # echo "dl: $(du -sh ./action_build/dl | cut -f 1)"
-          # echo "host: $(du -sh ./action_build/build_dir/host | cut -f 1)"
+          echo "dl: $(du -sh ./action_build/dl | cut -f 1)"
+          echo "host: $(du -sh ./action_build/build_dir/host | cut -f 1)"
 
       - name: Machine Information
         run: |
