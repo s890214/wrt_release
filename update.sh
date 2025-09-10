@@ -906,6 +906,44 @@ add_quickfile() {
     fi
 }
 
+add_bandix() {
+    local repo_url_core="https://github.com/timsaya/openwrt-bandix.git"
+    local target_dir_core="$BUILD_DIR/package/openwrt-bandix"
+
+    if [ -d "$target_dir_core" ]; then
+        rm -rf "$target_dir_core"
+    fi
+    echo "正在添加 openwrt-bandix..."
+    if ! git clone --depth 1 "$repo_url_core" "$target_dir_core"; then
+        echo "错误：从 $repo_url_core 克隆 openwrt-bandix 仓库失败" >&2
+        exit 1
+    fi
+
+    local makefile_path_core="$target_dir_core/Makefile"
+    if [ -f "$makefile_path_core" ]; then
+        # 在 "define Package/$(PKG_NAME)" 后面加 DEFAULT:=y
+        sed -i 's|^define Package/$(PKG_NAME)$|define Package/$(PKG_NAME)\n        DEFAULT:=y|' "$makefile_path_core"
+    fi
+
+    local repo_url_luci="https://github.com/timsaya/luci-app-bandix.git"
+    local target_dir_luci="$BUILD_DIR/package/feeds/luci/luci-app-bandix"
+
+    if [ -d "$target_dir_luci" ]; then
+        rm -rf "$target_dir_luci"
+    fi
+    echo "正在添加 luci-app-bandix..."
+    if ! git clone --depth 1 "$repo_url_luci" "$target_dir_luci"; then
+        echo "错误：从 $repo_url_luci 克隆 luci-app-bandix 仓库失败" >&2
+        exit 1
+    fi
+
+    local makefile_path_luci="$target_dir_luci/Makefile"
+    if [ -f "$makefile_path_luci" ]; then
+        # 在 PKG_RELEASE:=1 后面加 DEFAULT:=y
+        sed -i '/^PKG_RELEASE:=1$/a DEFAULT:=y' "$makefile_path_luci"
+    fi
+}
+
 # 设置 Nginx 默认配置
 set_nginx_default_config() {
     local nginx_config_path="$BUILD_DIR/feeds/packages/net/nginx-util/files/nginx.config"
@@ -1035,6 +1073,7 @@ main() {
     add_timecontrol
     add_gecoosac
     add_quickfile
+    add_bandix
     # update_lucky
     fix_rust_compile_error
     update_smartdns
