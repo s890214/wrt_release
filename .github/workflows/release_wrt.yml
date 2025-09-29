@@ -70,6 +70,15 @@ jobs:
                 find "$dir" -type f -exec touch {} +
             done
           fi
+          # if [ -d "./action_build/.ccache" ]; then
+          #   find "./action_build/.ccache" -type f -exec touch {} +
+          # fi
+          # if [ -d "./action_build/dl" ]; then
+          #   find "./action_build/dl" -type f -exec touch {} +
+          # fi
+          # if [ -d "./action_build/build_dir/host" ]; then
+          #   find "./action_build/build_dir/host" -type f -exec touch {} +
+          # fi
 
       - name: Build Firmware
         run: ./build.sh ${{ inputs.model }}
