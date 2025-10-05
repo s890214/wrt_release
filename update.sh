@@ -757,13 +757,6 @@ update_adguardhome() {
     fi
 }
 
-fix_easytier() {
-    local easytier_path="$BUILD_DIR/package/feeds/small8/luci-app-easytier/luasrc/model/cbi/easytier.lua"
-    if [ -d "${easytier_path%/*}" ] && [ -f "$easytier_path" ]; then
-        sed -i 's/util/xml/g' "$easytier_path"
-    fi
-}
-
 update_geoip() {
     local geodata_path="$BUILD_DIR/package/feeds/small8/v2ray-geodata/Makefile"
     if [ -d "${geodata_path%/*}" ] && [ -f "$geodata_path" ]; then
@@ -1101,7 +1094,6 @@ main() {
     install_feeds
     update_adguardhome
     update_script_priority
-    fix_easytier
     update_clash_meta
     # update_geoip
     update_package "runc" "releases" "v1.2.6"
