@@ -1024,7 +1024,7 @@ remove_tweaked_packages() {
 }
 
 update_argon() {
-    local repo_url="https://github.com/ZqinKing/luci-theme-argon.git"
+    local repo_url="https://github.com/sbwml/luci-theme-argon.git"
     local dst_theme_path="$BUILD_DIR/feeds/luci/themes/luci-theme-argon"
     local tmp_dir
     tmp_dir=$(mktemp -d)
@@ -1039,7 +1039,7 @@ update_argon() {
 
     rm -rf "$dst_theme_path"
     rm -rf "$tmp_dir/.git"
-    mv "$tmp_dir" "$dst_theme_path"
+    mv "$tmp_dir/luci-theme-argon" "$dst_theme_path"
 
     echo "luci-theme-argon 更新完成"
 }
