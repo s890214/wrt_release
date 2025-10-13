@@ -1044,6 +1044,13 @@ update_argon() {
     echo "luci-theme-argon 更新完成"
 }
 
+fix_easytier_lua() {
+    local file_path="$BUILD_DIR/package/feeds/small8/luci-app-easytier/luasrc/model/cbi/easytier.lua"
+    if [ -f "$file_path" ]; then
+        sed -i 's/util.pcdata/xml.pcdata/g' "$file_path"
+    fi
+}
+
 main() {
     clone_repo
     clean_up
@@ -1092,6 +1099,7 @@ main() {
     update_uwsgi_limit_as
     update_argon
     install_feeds
+    fix_easytier_lua
     update_adguardhome
     update_script_priority
     update_clash_meta
