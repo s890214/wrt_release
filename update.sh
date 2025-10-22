@@ -1087,49 +1087,49 @@ main() {
     remove_tweaked_packages
     update_homeproxy
     fix_default_set
-    fix_miniupnpd
+    # fix_miniupnpd
     update_golang
-    change_dnsmasq2full
-    fix_mk_def_depends
-    add_wifi_default_set
+    # change_dnsmasq2full
+    # fix_mk_def_depends
+    # add_wifi_default_set
     update_default_lan_addr
-    remove_something_nss_kmod
-    update_affinity_script
-    update_ath11k_fw
+    # remove_something_nss_kmod
+    # update_affinity_script
+    # update_ath11k_fw
     # fix_mkpkg_format_invalid
     change_cpuusage
-    update_tcping
+    # update_tcping
     add_ax6600_led
     update_lucky_app
-    set_custom_task
-    apply_passwall_tweaks
+    # set_custom_task
+    # apply_passwall_tweaks
     install_opkg_distfeeds
-    update_nss_pbuf_performance
+    # update_nss_pbuf_performance
     set_build_signature
-    update_nss_diag
-    update_menu_location
-    fix_compile_coremark
-    update_dnsmasq_conf
+    # update_nss_diag
+    # update_menu_location
+    # fix_compile_coremark
+    # update_dnsmasq_conf
     add_backup_info_to_sysupgrade
-    update_mosdns_deconfig
-    fix_quickstart
-    update_oaf_deconfig
+    # update_mosdns_deconfig
+    # fix_quickstart
+    # update_oaf_deconfig
     add_timecontrol
     add_gecoosac
     add_quickfile
     add_bandix
     # update_lucky
-    fix_rust_compile_error
-    update_smartdns
-    update_diskman
+    # fix_rust_compile_error
+    # update_smartdns
+    # update_diskman
     set_nginx_default_config
-    update_uwsgi_limit_as
+    # update_uwsgi_limit_as
     update_argon
     update_nginx_ubus_module # 更新 nginx-mod-ubus 模块
     install_feeds
-    fix_easytier_lua
-    update_adguardhome
-    update_script_priority
+    # fix_easytier_lua
+    # update_adguardhome
+    # update_script_priority
     update_clash_meta
     # update_geoip
     update_package "runc" "releases" "v1.2.6"
