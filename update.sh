@@ -1085,7 +1085,7 @@ main() {
     update_feeds
     remove_unwanted_packages
     remove_tweaked_packages
-    update_homeproxy
+    # update_homeproxy
     fix_default_set
     # fix_miniupnpd
     update_golang
@@ -1136,7 +1136,7 @@ main() {
     update_package "containerd" "releases" "v1.7.27"
     update_package "docker" "tags" "v28.2.2"
     update_package "dockerd" "releases" "v28.2.2"
-    apply_hash_fixes # 调用哈希修正函数
+    # apply_hash_fixes # 调用哈希修正函数
 }
 
 main "$@"
