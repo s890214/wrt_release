@@ -1086,7 +1086,7 @@ main() {
     remove_unwanted_packages
     remove_tweaked_packages
     # update_homeproxy
-    fix_default_set
+    # fix_default_set
     # fix_miniupnpd
     update_golang
     # change_dnsmasq2full
