@@ -161,9 +161,9 @@ remove_unwanted_packages() {
     # fi
 
     # 临时放一下，清理脚本
-    if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
-        find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
-    fi
+    # if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
+    #     find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
+    # fi
 }
 
 update_golang() {
@@ -1086,7 +1086,7 @@ main() {
     remove_unwanted_packages
     remove_tweaked_packages
     # update_homeproxy
-    # fix_default_set
+    fix_default_set
     # fix_miniupnpd
     update_golang
     # change_dnsmasq2full
