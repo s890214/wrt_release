@@ -334,7 +334,7 @@ apply_hash_fixes() {
         "smartdns"    
 }
 
-update_ath11k_fw() {
+() {
     local makefile="$BUILD_DIR/package/firmware/ath11k-firmware/Makefile"
     local new_mk="$BASE_PATH/patches/ath11k_fw.mk"
     local url="https://raw.githubusercontent.com/VIKINGYFY/immortalwrt/refs/heads/main/package/firmware/ath11k-firmware/Makefile"
@@ -1104,9 +1104,9 @@ main() {
     # set_custom_task
     # apply_passwall_tweaks
     install_opkg_distfeeds
-    # update_nss_pbuf_performance
+    update_nss_pbuf_performance
     set_build_signature
-    # update_nss_diag
+    update_nss_diag
     # update_menu_location
     # fix_compile_coremark
     # update_dnsmasq_conf
@@ -1136,7 +1136,7 @@ main() {
     update_package "containerd" "releases" "v1.7.27"
     update_package "docker" "tags" "v28.2.2"
     update_package "dockerd" "releases" "v28.2.2"
-    # apply_hash_fixes # 调用哈希修正函数
+    apply_hash_fixes # 调用哈希修正函数
 }
 
 main "$@"
