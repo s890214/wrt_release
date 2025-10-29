@@ -198,6 +198,30 @@ install_fullconenat() {
     fi
 }
 
+check_default_settings() {
+    local settings_dir="$BUILD_DIR/package/emortal/default-settings"
+    if [ ! -d "$settings_dir" ]; then
+        echo "目录 $settings_dir 不存在，正在从 immortalwrt 仓库克隆..."
+        local tmp_dir
+        tmp_dir=$(mktemp -d)
+        if git clone --depth 1 --filter=blob:none --sparse https://github.com/immortalwrt/immortalwrt.git "$tmp_dir"; then
+            pushd "$tmp_dir" > /dev/null
+            git sparse-checkout set package/emortal/default-settings
+            # 确保目标父目录存在
+            mkdir -p "$(dirname "$settings_dir")"
+            # 移动 default-settings 目录
+            mv package/emortal/default-settings "$settings_dir"
+            popd > /dev/null
+            rm -rf "$tmp_dir"
+            echo "default-settings 克隆并移动成功。"
+        else
+            echo "错误：克隆 immortalwrt 仓库失败" >&2
+            rm -rf "$tmp_dir"
+            exit 1
+        fi
+    fi
+}
+
 install_feeds() {
     ./scripts/feeds update -i
     for dir in $BUILD_DIR/feeds/*; do
@@ -219,8 +243,9 @@ fix_default_set() {
         find "$BUILD_DIR/feeds/luci/collections/" -type f -name "Makefile" -exec sed -i "s/luci-theme-bootstrap/luci-theme-$THEME_SET/g" {} \;
     fi
 
-    # install -Dm755 "$BASE_PATH/patches/990_set_argon_primary" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/990_set_argon_primary"
-    install -Dm755 "$BASE_PATH/patches/991_custom_settings" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/991_custom_settings"
+    # install -Dm544 "$BASE_PATH/patches/990_set_argon_primary" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/990_set_argon_primary"
+    install -Dm544 "$BASE_PATH/patches/991_custom_settings" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/991_custom_settings"
+    install -Dm544 "$BASE_PATH/patches/992_set-wifi-uci.sh" "$BUILD_DIR/package/base-files/files/etc/uci-defaults/992_set-wifi-uci.sh"
 
     if [ -f "$BUILD_DIR/package/emortal/autocore/files/tempinfo" ]; then
         if [ -f "$BASE_PATH/patches/tempinfo" ]; then
@@ -248,17 +273,6 @@ fix_mk_def_depends() {
     sed -i 's/libustream-mbedtls/libustream-openssl/g' $BUILD_DIR/include/target.mk 2>/dev/null
     if [ -f $BUILD_DIR/target/linux/qualcommax/Makefile ]; then
         sed -i 's/wpad-openssl/wpad-mesh-openssl/g' $BUILD_DIR/target/linux/qualcommax/Makefile
-    fi
-}
-
-add_wifi_default_set() {
-    local qualcommax_uci_dir="$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults"
-    local filogic_uci_dir="$BUILD_DIR/target/linux/mediatek/filogic/base-files/etc/uci-defaults"
-    if [ -d "$qualcommax_uci_dir" ]; then
-        install -Dm755 "$BASE_PATH/patches/992_set-wifi-uci.sh" "$qualcommax_uci_dir/992_set-wifi-uci.sh"
-    fi
-    if [ -d "$filogic_uci_dir" ]; then
-        install -Dm755 "$BASE_PATH/patches/992_set-wifi-uci.sh" "$filogic_uci_dir/992_set-wifi-uci.sh"
     fi
 }
 
@@ -916,44 +930,6 @@ add_quickfile() {
     fi
 }
 
-add_bandix() {
-    local repo_url_core="https://github.com/timsaya/openwrt-bandix.git"
-    local target_dir_core="$BUILD_DIR/package/openwrt-bandix"
-
-    if [ -d "$target_dir_core" ]; then
-        rm -rf "$target_dir_core"
-    fi
-    echo "正在添加 openwrt-bandix..."
-    if ! git clone --depth 1 "$repo_url_core" "$target_dir_core"; then
-        echo "错误：从 $repo_url_core 克隆 openwrt-bandix 仓库失败" >&2
-        exit 1
-    fi
-
-    local makefile_path_core="$target_dir_core/Makefile"
-    if [ -f "$makefile_path_core" ]; then
-        # 在 "define Package/$(PKG_NAME)" 后面加 DEFAULT:=y
-        sed -i 's|^define Package/$(PKG_NAME)$|define Package/$(PKG_NAME)\n        DEFAULT:=y|' "$makefile_path_core"
-    fi
-
-    local repo_url_luci="https://github.com/timsaya/luci-app-bandix.git"
-    local target_dir_luci="$BUILD_DIR/package/feeds/luci/luci-app-bandix"
-
-    if [ -d "$target_dir_luci" ]; then
-        rm -rf "$target_dir_luci"
-    fi
-    echo "正在添加 luci-app-bandix..."
-    if ! git clone --depth 1 "$repo_url_luci" "$target_dir_luci"; then
-        echo "错误：从 $repo_url_luci 克隆 luci-app-bandix 仓库失败" >&2
-        exit 1
-    fi
-
-    local makefile_path_luci="$target_dir_luci/Makefile"
-    if [ -f "$makefile_path_luci" ]; then
-        # 在 PKG_RELEASE:=1 后面加 DEFAULT:=y
-        sed -i '/^PKG_RELEASE:=1$/a DEFAULT:=y' "$makefile_path_luci"
-    fi
-}
-
 # 设置 Nginx 默认配置
 set_nginx_default_config() {
     local nginx_config_path="$BUILD_DIR/feeds/packages/net/nginx-util/files/nginx.config"
@@ -1091,7 +1067,6 @@ main() {
     update_golang
     # change_dnsmasq2full
     # fix_mk_def_depends
-    # add_wifi_default_set
     update_default_lan_addr
     # remove_something_nss_kmod
     # update_affinity_script
@@ -1103,7 +1078,6 @@ main() {
     update_lucky_app
     # set_custom_task
     # apply_passwall_tweaks
-    install_opkg_distfeeds
     update_nss_pbuf_performance
     set_build_signature
     update_nss_diag
@@ -1117,7 +1091,6 @@ main() {
     add_timecontrol
     add_gecoosac
     add_quickfile
-    add_bandix
     # update_lucky
     # fix_rust_compile_error
     # update_smartdns
@@ -1126,6 +1099,8 @@ main() {
     # update_uwsgi_limit_as
     update_argon
     update_nginx_ubus_module # 更新 nginx-mod-ubus 模块
+    check_default_settings
+    install_opkg_distfeeds
     install_feeds
     # fix_easytier_lua
     # update_adguardhome
