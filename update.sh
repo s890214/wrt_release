@@ -161,9 +161,9 @@ remove_unwanted_packages() {
     # fi
 
     # 临时放一下，清理脚本
-    # if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
-    #     find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
-    # fi
+    if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
+        find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
+    fi
 }
 
 update_golang() {
@@ -1066,7 +1066,7 @@ main() {
     # fix_miniupnpd
     update_golang
     # change_dnsmasq2full
-    # fix_mk_def_depends
+    fix_mk_def_depends
     update_default_lan_addr
     # remove_something_nss_kmod
     # update_affinity_script
@@ -1082,7 +1082,7 @@ main() {
     set_build_signature
     update_nss_diag
     # update_menu_location
-    # fix_compile_coremark
+    fix_compile_coremark
     # update_dnsmasq_conf
     add_backup_info_to_sysupgrade
     # update_mosdns_deconfig
@@ -1096,7 +1096,7 @@ main() {
     # update_smartdns
     # update_diskman
     set_nginx_default_config
-    # update_uwsgi_limit_as
+    update_uwsgi_limit_as
     update_argon
     update_nginx_ubus_module # 更新 nginx-mod-ubus 模块
     check_default_settings
@@ -1104,7 +1104,7 @@ main() {
     install_feeds
     # fix_easytier_lua
     # update_adguardhome
-    # update_script_priority
+    update_script_priority
     update_clash_meta
     # update_geoip
     update_package "runc" "releases" "v1.2.6"
