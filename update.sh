@@ -259,7 +259,8 @@ fix_default_set() {
     fi
 
 	# 删除luci-app-attendedsysupgrade在概览页面的升级提示
-	rm -rf "$BUILD_DIR/feeds/luci/applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/status/include/11_upgrades.js"
+	rm -rf "$BUILD_DIR/feeds/luci/applications/luci-app-attendedsysupgrade"
+	rm -rf "$BUILD_DIR/feeds/packages/utils/attendedsysupgrade-common"
 }
 
 fix_miniupnpd() {
