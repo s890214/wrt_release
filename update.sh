@@ -168,9 +168,9 @@ remove_unwanted_packages() {
     # fi
 
     # 临时放一下，清理脚本
-    if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
-        find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
-    fi
+    # if [ -d "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults" ]; then
+    #     find "$BUILD_DIR/target/linux/qualcommax/base-files/etc/uci-defaults/" -type f -name "99*.sh" -exec rm -f {} +
+    # fi
 }
 
 update_golang() {
@@ -1134,54 +1134,54 @@ main() {
     update_feeds
     remove_unwanted_packages
     remove_tweaked_packages
-    # update_homeproxy
+    # update_homeproxy        # Homeproxy更新快，建议随feed更新，避免手动clone冲突
     fix_default_set
-    # fix_miniupnpd
+    # fix_miniupnpd           # 新版miniupnpd默认配置已优化，无需patch
     update_golang
-    # change_dnsmasq2full
-    fix_mk_def_depends
+    # change_dnsmasq2full     # 现代固件默认通常已是full版本
+    # fix_mk_def_depends
     update_default_lan_addr
-    remove_something_nss_kmod
+    # remove_something_nss_kmod
     update_affinity_script
-    # update_ath11k_fw
-    # fix_mkpkg_format_invalid
+    # update_ath11k_fw        # 强制替换Makefile易导致内核不匹配panic
+    # fix_mkpkg_format_invalid # 针对旧版imm-nss的hack，新版编译器已修复
     change_cpuusage
     # update_tcping
     add_ax6600_led
     update_lucky_app
-    # set_custom_task
-    # apply_passwall_tweaks
+    # set_custom_task         # Watchdog建议通过WebUI配置，脚本注入易死循环
+    # apply_passwall_tweaks   # 规则清理逻辑过时，易导致Passwall启动报错
     update_nss_pbuf_performance
     set_build_signature
     update_nss_diag
-    # update_menu_location
+    # update_menu_location    # 新版LuCI已修复菜单归类
     fix_compile_coremark
-    # update_dnsmasq_conf
+    # update_dnsmasq_conf     # 旧配置重定向会导致现代固件DHCP异常
     add_backup_info_to_sysupgrade
-    # update_mosdns_deconfig
-    # fix_quickstart
-    # update_oaf_deconfig
+    # update_mosdns_deconfig  # 建议在LuCI界面配置，脚本强制修改易导致无法保存
+    # fix_quickstart          # iStore后端代码已更新，手动patch会失败
+    # update_oaf_deconfig     # OAF结构变化大，旧脚本不再适用
     add_timecontrol
     add_gecoosac
     add_quickfile
-    # update_lucky
-    # fix_rust_compile_error
-    # update_smartdns
-    # update_diskman
+    # update_lucky            # 重复：上面update_lucky_app已处理，此处逻辑旧且易错
+    # fix_rust_compile_error  # 新版编译环境已解决Rust LLVM下载问题
+    # update_smartdns         # 建议使用feed版本，手动clone易缺失依赖
+    # update_diskman          # 现在的diskman原生支持ntfs3
     set_nginx_default_config
     update_uwsgi_limit_as
     update_argon
     update_nginx_ubus_module # 更新 nginx-mod-ubus 模块
     check_default_settings
     install_opkg_distfeeds
-    fix_easytier_mk
+    fix_easytier_mk           # 修复Makefile架构判断错误
     remove_attendedsysupgrade
     install_feeds
     # fix_easytier_lua
     # update_adguardhome
     update_script_priority
     update_clash_meta
-    # update_geoip
+    # update_geoip            # 插件支持在线自动更新，无需编译时下载
     update_package "runc" "releases" "v1.2.6"
     update_package "containerd" "releases" "v1.7.27"
     update_package "docker" "tags" "v28.2.2"
