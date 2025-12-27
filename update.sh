@@ -1195,7 +1195,7 @@ main() {
     # change_dnsmasq2full     # 现代固件默认通常已是full版本
     # fix_mk_def_depends
     update_default_lan_addr
-    remove_something_nss_kmod
+    # remove_something_nss_kmod
     update_affinity_script
     # update_ath11k_fw        # 强制替换Makefile易导致内核不匹配panic
     # fix_mkpkg_format_invalid # 针对旧版imm-nss的hack，新版编译器已修复
